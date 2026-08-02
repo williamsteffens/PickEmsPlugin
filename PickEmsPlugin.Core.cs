@@ -96,9 +96,6 @@ public partial class PickEmsPlugin
             return;
         }
 
-        int updatedUpgradeBits = ability.UpgradeBits;
-        updatedUpgradeBits = (updatedUpgradeBits << 1) | 1;
-
-        ability.UpgradeBits = updatedUpgradeBits;
+        ability.UpgradeBits = (ability.UpgradeBits << upgrades) | ((1 << upgrades) - 1);
     }
 }

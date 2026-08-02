@@ -56,4 +56,24 @@ public partial class PickEmsPlugin
 
         Console.WriteLine($"Drafting {hero}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
     }
+
+    [Command("progress")]
+    public void CmdProgress(
+        CCitadelPlayerController caller,
+        int slot,
+        int upgrades)
+    {
+        var pawn = caller?.GetHeroPawn();
+        if (pawn == null)
+        {
+            Console.WriteLine("Player does not have a hero pawn.");
+            return;
+        }
+
+        ProgressAbility(
+            pawn,
+            slot - 1, // Convert to 0-based index
+            upgrades
+        );
+    }
 }
