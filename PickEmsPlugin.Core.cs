@@ -5,7 +5,7 @@ namespace PickEmsPlugin;
 
 public partial class PickEmsPlugin
 {
-    private static readonly Dictionary<string, Dictionary<int, string>> heroAbilityMapping =
+    private static readonly Dictionary<string, Dictionary<int, string>> _heroAbilityMapping =
         LoadHeroAbilityMapping();
 
     // TODO: all of this should probably be moved to a config class https://docs.deadworks.net/api-reference/configuration
@@ -59,6 +59,27 @@ public partial class PickEmsPlugin
                 StringComparer.OrdinalIgnoreCase
             );
         }
+    }
+
+    private static readonly Dictionary<string, Heroes> _heroLookup =
+        BuildHeroLookup();
+
+    private static Dictionary<string, Heroes> BuildHeroLookup()
+    {
+        var lookup = new Dictionary<string, Heroes>(
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var hero in Enum.GetValues<Heroes>())
+        {
+            lookup[hero.ToString()] = hero;
+
+            var displayName = hero.ToDisplayName();
+
+            if (!string.IsNullOrWhiteSpace(displayName))
+                lookup[displayName] = hero;
+        }
+
+        return lookup;
     }
 
     private static void AddDraftAbility(CCitadelPlayerPawn pawn, int slot, string newAbility)
