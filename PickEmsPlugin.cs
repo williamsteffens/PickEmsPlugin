@@ -9,6 +9,8 @@ public partial class PickEmsPlugin : DeadworksPluginBase
     public override void OnLoad(bool isReload)
     {
         Console.WriteLine(isReload ? "PickEmsPlugin reloaded!" : "PickEmsPlugin loaded!");
+        Console.WriteLine("Loading hero ability mapping...");
+        LoadHeroAbilityMapping();
     }
 
     public override void OnUnload()

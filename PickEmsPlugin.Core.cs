@@ -8,12 +8,19 @@ public partial class PickEmsPlugin
     private static readonly Dictionary<string, Dictionary<int, string>> heroAbilityMapping =
         LoadHeroAbilityMapping();
 
+    // TODO: all of this should probably be moved to a config class https://docs.deadworks.net/api-reference/configuration
     private static Dictionary<string, Dictionary<int, string>> LoadHeroAbilityMapping()
     {
-        var path = Path.Combine(
-            AppContext.BaseDirectory,
-            "heroAbilityMapping.json"
-        );
+        var currentDirectory = Directory.GetCurrentDirectory();
+        
+        var path = Directory
+        .EnumerateFiles(
+            currentDirectory,
+             "heroAbilityMapping.json",
+            SearchOption.AllDirectories)
+        .FirstOrDefault();
+
+        Console.WriteLine($"Loading hero ability mapping from: {path}");
 
         if (!File.Exists(path))
         {
