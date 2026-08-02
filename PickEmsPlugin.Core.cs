@@ -20,11 +20,11 @@ public partial class PickEmsPlugin
             SearchOption.AllDirectories)
         .FirstOrDefault();
 
-        Console.WriteLine($"Loading hero ability mapping from: {path}");
+        WriteConsole(null, $"Loading hero ability mapping from: {path}");
 
         if (!File.Exists(path))
         {
-            Console.WriteLine($"Hero ability mapping not found: {path}");
+            WriteConsole(null, $"Hero ability mapping not found: {path}");
             return new Dictionary<string, Dictionary<int, string>>(
                 // Use case-insensitive comparison for hero names
                 StringComparer.OrdinalIgnoreCase
@@ -43,7 +43,7 @@ public partial class PickEmsPlugin
 
             if (raw == null)
             {
-                Console.WriteLine($"Hero ability mapping is empty: {path}");
+                WriteConsole(null, $"Hero ability mapping is empty: {path}");
                 return result;
             }
 
@@ -54,7 +54,7 @@ public partial class PickEmsPlugin
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load heroAbilityMapping.json: {ex}");
+            WriteConsole(null, $"Failed to load heroAbilityMapping.json: {ex}");
             return new Dictionary<string, Dictionary<int, string>>(
                 StringComparer.OrdinalIgnoreCase
             );
@@ -113,7 +113,7 @@ public partial class PickEmsPlugin
         CCitadelBaseAbility? ability = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
         if (ability == null)
         {
-            Console.WriteLine($"No ability found in slot {slot} for pawn {pawn.Name}");
+            WriteConsole(pawn.Controller, $"No ability found in slot {slot} for pawn {pawn.Name}");
             return;
         }
 

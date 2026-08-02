@@ -14,43 +14,43 @@ public partial class PickEmsPlugin
         var pawn = caller?.GetHeroPawn();
         if (pawn == null)
         {
-            Console.WriteLine("Player does not have a hero pawn.");
+            WriteConsole(caller, "Player does not have a hero pawn.");
             return;
         }
 
         if (slot < 1 || slot > 4) // (ushort)EAbilitySlot.Signature4 used this before, but it was changed to 4 to match the abilitySlot check below
         {
-            Console.WriteLine($"Invalid ability slot {slot}. Must be between 1 and 4.");
+            WriteConsole(caller, $"Invalid ability slot {slot}. Must be between 1 and 4.");
             return;
         }
 
         if (abilitySlot < 1 || abilitySlot > 4)
         {
-            Console.WriteLine($"Invalid ability slot {abilitySlot}. Must be between 1 and 4.");
+            WriteConsole(caller, $"Invalid ability slot {abilitySlot}. Must be between 1 and 4.");
             return;
         }
 
         if (slot == 4 && abilitySlot != 4 || slot != 4 && abilitySlot == 4)
         {
-            Console.WriteLine($"Invalid ability slot {abilitySlot} for ultimate ability. Ultimate ability can only be selected for slot 4.");
+            WriteConsole(caller, $"Invalid ability slot {abilitySlot} for ultimate ability. Ultimate ability can only be selected for slot 4.");
             return;
         }
 
         if (!_heroLookup.TryGetValue(heroName, out var hero))
         {
-            Console.WriteLine($"Invalid hero name {heroName}. Must be a valid hero name.");
+            WriteConsole(caller, $"Invalid hero name {heroName}. Must be a valid hero name.");
             return;
         }
 
         if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
         {
-            Console.WriteLine($"No ability mapping found for hero {heroName}.");
+            WriteConsole(caller, $"No ability mapping found for hero {heroName}.");
             return;
         }
 
         if (!abilities.TryGetValue(abilitySlot, out var ability))
         {
-            Console.WriteLine($"No ability mapping found for slot {abilitySlot} for hero {heroName}.");
+            WriteConsole(caller, $"No ability mapping found for slot {abilitySlot} for hero {heroName}.");
             return;
         }
 
@@ -60,7 +60,7 @@ public partial class PickEmsPlugin
             ability
         );
 
-        Console.WriteLine($"Drafting {heroName}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
+        WriteConsole(caller, $"Drafting {heroName}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
     }
 
     [Command("draft_list")]
@@ -69,7 +69,7 @@ public partial class PickEmsPlugin
         var pawn = caller?.GetHeroPawn();
         if (pawn == null)
         {
-            Console.WriteLine("Player does not have a hero pawn.");
+            WriteConsole(caller, "Player does not have a hero pawn.");
             return;
         }
 
@@ -77,17 +77,16 @@ public partial class PickEmsPlugin
         {
             if (Enum.TryParse<Heroes>(hero.Key, true, out var heroEnum))
             {
-                Console.WriteLine($"{heroEnum.ToDisplayName()} / \"{hero.Key}\":");
+                WriteConsole(caller, $"{heroEnum.ToDisplayName()} / \"{hero.Key}\":");
             }
             else
             {
-                Console.WriteLine($"{hero.Key}:");
+                WriteConsole(caller, $"{hero.Key}:");
             }
 
             foreach (var ability in hero.Value.OrderBy(x => x.Key))
             {
-                Console.WriteLine(
-                    $"  {ability.Key}: {ability.Value}");
+                WriteConsole(caller, $"  {ability.Key}: {ability.Value}");
             }
         }
     }
@@ -98,19 +97,19 @@ public partial class PickEmsPlugin
         var pawn = caller?.GetHeroPawn();
         if (pawn == null)
         {
-            Console.WriteLine("Player does not have a hero pawn.");
+            WriteConsole(caller, "Player does not have a hero pawn.");
             return;
         }
 
         if (!_heroLookup.TryGetValue(heroName, out var hero))
         {
-            Console.WriteLine($"Invalid hero name {heroName}. Must be a valid hero name.");
+            WriteConsole(caller, $"Invalid hero name {heroName}. Must be a valid hero name.");
             return;
         }
 
         if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
         {
-            Console.WriteLine($"No ability mapping found for hero {heroName}.");
+            WriteConsole(caller, $"No ability mapping found for hero {heroName}.");
             return;
         }
 
@@ -122,7 +121,7 @@ public partial class PickEmsPlugin
                 ability.Value
             );
 
-            Console.WriteLine($"Drafting {heroName}'s ability {ability.Value} to slot {ability.Key} for player {caller?.PlayerSteamId}.");
+            WriteConsole(caller, $"Drafting {heroName}'s ability {ability.Value} to slot {ability.Key} for player {caller?.PlayerSteamId}.");
         }
     }
 
@@ -135,7 +134,7 @@ public partial class PickEmsPlugin
         var pawn = caller?.GetHeroPawn();
         if (pawn == null)
         {
-            Console.WriteLine("Player does not have a hero pawn.");
+            WriteConsole(caller, "Player does not have a hero pawn.");
             return;
         }
 
