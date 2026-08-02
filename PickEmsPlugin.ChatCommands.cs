@@ -79,6 +79,35 @@ public partial class PickEmsPlugin
         }
     }
 
+
+    [Command("draft_all_from_hero")]
+    public void CmdDraftAllFromHero(CCitadelPlayerController caller, string heroName)
+    {
+        var pawn = caller?.GetHeroPawn();
+        if (pawn == null)
+        {
+            Console.WriteLine("Player does not have a hero pawn.");
+            return;
+        }
+
+        if (!heroAbilityMapping.TryGetValue(heroName, out var abilities))
+        {
+            Console.WriteLine($"No ability mapping found for hero {heroName}.");
+            return;
+        }
+
+        foreach (var ability in abilities)
+        {
+            AddDraftAbility(
+                pawn,
+                ability.Key - 1, // Convert to 0-based index
+                ability.Value
+            );
+
+            Console.WriteLine($"Drafting {heroName}'s ability {ability.Value} to slot {ability.Key} for player {caller?.PlayerSteamId}.");
+        }
+    }
+
     [Command("progress")]
     public void CmdProgress(
         CCitadelPlayerController caller,
