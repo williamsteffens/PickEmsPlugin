@@ -8,7 +8,7 @@ public partial class PickEmsPlugin
     public void CmdDraft(
         CCitadelPlayerController caller,
         int slot,
-        string hero,
+        string heroName,
         int abilitySlot)
     {
         var pawn = caller?.GetHeroPawn();
@@ -36,15 +36,15 @@ public partial class PickEmsPlugin
             return;
         }
 
-        if (!heroAbilityMapping.TryGetValue(hero, out var abilities))
+        if (!heroAbilityMapping.TryGetValue(heroName, out var abilities))
         {
-            Console.WriteLine($"No ability mapping found for hero {hero}.");
+            Console.WriteLine($"No ability mapping found for hero {heroName}.");
             return;
         }
 
         if (!abilities.TryGetValue(abilitySlot, out var ability))
         {
-            Console.WriteLine($"No ability mapping found for slot {abilitySlot} for hero {hero}.");
+            Console.WriteLine($"No ability mapping found for slot {abilitySlot} for hero {heroName}.");
             return;
         }
 
@@ -54,7 +54,7 @@ public partial class PickEmsPlugin
             ability
         );
 
-        Console.WriteLine($"Drafting {hero}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
+        Console.WriteLine($"Drafting {heroName}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
     }
 
     [Command("progress")]
