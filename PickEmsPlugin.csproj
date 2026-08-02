@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>PickEmsPlugin</AssemblyName>
+        <RootNamespace>PickEmsPlugin</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="DeadworksManaged.Api">
+        <HintPath>/mnt/d/SteamLibrary/steamapps/common/Deadlock/game/bin/win64/managed/DeadworksManaged.Api.dll</HintPath>
+        </Reference>
+
+        <Reference Include="Google.Protobuf">
+        <HintPath>/mnt/d/SteamLibrary/steamapps/common/Deadlock/game/bin/win64/managed/Google.Protobuf.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <Target Name="DeployToGame" AfterTargets="Build">
+        <ItemGroup>
+            <DeployFiles Include="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).pdb" />
+        </ItemGroup>
+        <Copy
+        SourceFiles="@(DeployFiles)"
+        DestinationFolder="\mnt\d\SteamLibrary\steamapps\common\Deadlock\game\bin\win64\managed\plugins"
+        SkipUnchangedFiles="false"
+        Retries="0"
+        ContinueOnError="WarnAndContinue" />
+    </Target>
+</Project>

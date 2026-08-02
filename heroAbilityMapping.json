@@ -1,0 +1,230 @@
+{
+  "Inferno": {
+    "1": "ability_incendiary_projectile",
+    "2": "ability_flame_dash",
+    "3": "ability_afterburn",
+    "4": "ability_fire_bomb"
+  },
+  "Gigawatt": {
+    "1": "citadel_ability_lightning_ball",
+    "2": "citadel_ability_static_charge",
+    "3": "ability_power_surge",
+    "4": "citadel_ability_storm_cloud"
+  },
+  "Hornet": {
+    "1": "citadel_ability_hornet_chain",
+    "2": "citadel_ability_hornet_leap",
+    "3": "citadel_ability_hornet_sting",
+    "4": "citadel_ability_hornet_snipe"
+  },
+  "Ghost": {
+    "1": "ability_blood_bomb",
+    "2": "ability_life_drain",
+    "3": "ability_blood_shards",
+    "4": "ability_health_swap"
+  },
+  "Atlas": {
+    "1": "citadel_ability_bull_heal",
+    "2": "citadel_ability_bull_charge",
+    "3": "citadel_ability_passive_beefy",
+    "4": "citadel_ability_bull_leap"
+  },
+  "Wraith": {
+    "1": "citadel_ability_card_toss",
+    "2": "citadel_ability_projectmind",
+    "3": "citadel_ability_wraith_rapidfire",
+    "4": "citadel_ability_psychic_lift"
+  },
+  "Forge": {
+    "1": "citadel_ability_shieldedsentry",
+    "2": "citadel_ability_mobile_resupply",
+    "3": "citadel_ability_fissure_wall",
+    "4": "citadel_ability_rocket_barrage"
+  },
+  "Chrono": {
+    "1": "citadel_ability_chrono_pulse_grenade",
+    "2": "citadel_ability_chrono_time_wall",
+    "3": "citadel_ability_chrono_kinetic_carbine",
+    "4": "citadel_ability_chrono_swap"
+  },
+  "Dynamo": {
+    "1": "citadel_ability_stomp",
+    "2": "citadel_ability_void_sphere",
+    "3": "citadel_ability_nikuman",
+    "4": "citadel_ability_self_vacuum"
+  },
+  "Kelvin": {
+    "1": "ability_ice_grenade",
+    "2": "ability_icepath",
+    "3": "ability_icebeam",
+    "4": "ability_ice_dome"
+  },
+  "Haze": {
+    "1": "ability_sleep_dagger",
+    "2": "ability_smoke_bomb",
+    "3": "ability_stacking_damage",
+    "4": "ability_bullet_flurry"
+  },
+  "Astro": {
+    "1": "ability_explosive_barrel",
+    "2": "ability_bounce_pad",
+    "3": "ability_crackshot",
+    "4": "ability_gravity_lasso"
+  },
+  "Bebop": {
+    "1": "citadel_ability_uppercut",
+    "2": "citadel_ability_sticky_bomb",
+    "3": "citadel_ability_hook",
+    "4": "citadel_ability_bebop_laser_beam"
+  },
+  "Nano": {
+    "1": "citadel_ability_nano_clustergrenade",
+    "2": "citadel_ability_nano_dash",
+    "3": "ability_nano_catform",
+    "4": "shadow_pulse"
+  },
+  "Orion": {
+    "1": "ability_charged_shot",
+    "2": "ability_power_jump",
+    "3": "ability_immobilize_trap",
+    "4": "ability_guided_arrow"
+  },
+  "Krill": {
+    "1": "ability_intimidate",
+    "2": "ability_burrow",
+    "3": "ability_throw_sand",
+    "4": "ability_ult_combo"
+  },
+  "Shiv": {
+    "1": "citadel_ability_shiv_dagger",
+    "2": "citadel_ability_shiv_dash",
+    "3": "citadel_ability_shiv_defer_damage",
+    "4": "citadel_ability_shiv_killing_blow"
+  },
+  "Tengu": {
+    "1": "citadel_ability_tengu_urn",
+    "2": "citadel_ability_tangotether",
+    "3": "citadel_ability_tengu_stone_form",
+    "4": "citadel_ability_tengu_airlift"
+  },
+  "Warden": {
+    "1": "ability_warden_crowd_control",
+    "2": "ability_warden_high_alert",
+    "3": "ability_warden_lock_down",
+    "4": "ability_warden_riot_protocol"
+  },
+  "Yamato": {
+    "1": "citadel_ability_power_slash",
+    "2": "citadel_ability_flying_strike",
+    "3": "citadel_ability_healing_slash",
+    "4": "ability_infinity_slash"
+  },
+  "Lash": {
+    "1": "citadel_ability_lash_down_strike",
+    "2": "citadel_ability_lash",
+    "3": "ability_lash_flog",
+    "4": "citadel_ability_lash_ultimate"
+  },
+  "Viscous": {
+    "1": "viscous_goo_grenade",
+    "2": "viscous_restorative_goo",
+    "3": "viscous_telepunch",
+    "4": "viscous_goo_bowling_ball"
+  },
+  "Synth": {
+    "1": "synth_barrage",
+    "2": "synth_plasma_flux",
+    "3": "synth_pulse",
+    "4": "synth_affliction"
+  },
+  "Mirage": {
+    "1": "mirage_fire_beetles",
+    "2": "mirage_tornado",
+    "3": "mirage_sand_phantom",
+    "4": "mirage_teleport"
+  },
+  "Viper": {
+    "1": "ability_viper_debuffdagger",
+    "2": "ability_viper_venom",
+    "3": "ability_snake_dash",
+    "4": "ability_viper_petrifybola"
+  },
+  "Magician": {
+    "1": "ability_magician_magicbolt",
+    "2": "citadel_ability_turretclone",
+    "3": "ability_magician_animalhexarea",
+    "4": "ability_magician_copyult"
+  },
+  "VampireBat": {
+    "1": "ability_vampirebat_steallife",
+    "2": "ability_vampirebat_batblink",
+    "3": "ability_vampirebat_lovebites",
+    "4": "ability_vampirebat_batswarm"
+  },
+  "Drifter": {
+    "1": "drifter_blood_blast",
+    "2": "drifter_shadow_mark",
+    "3": "ability_drifter_hunger",
+    "4": "drifter_darkness"
+  },
+  "Priest": {
+    "1": "priest_flashbang",
+    "2": "ability_priest_knockback",
+    "3": "priest_beartrap",
+    "4": "ability_priest_weaponswap"
+  },
+  "Frank": {
+    "1": "ability_frank_shocktarget2",
+    "2": "ability_frank_selfzap",
+    "3": "ability_frank_painaura",
+    "4": "ability_frank_revive"
+  },
+  "Bookworm": {
+    "1": "ability_bookworm_dragonfire",
+    "2": "ability_bookworm_knightbarrier",
+    "3": "ability_bookworm_aoemagic",
+    "4": "citadel_ability_bookworm_knightcharge"
+  },
+  "Doorman": {
+    "1": "ability_doorman_bomb",
+    "2": "ability_doorman_doorway",
+    "3": "ability_doorman_luggage_cart",
+    "4": "ability_doorman_hotel"
+  },
+  "PunkGoat": {
+    "1": "ability_punkgoat_ult",
+    "2": "ability_punkgoat_goatflip",
+    "3": "ability_punkgoat_blasted",
+    "4": "ability_punkgoat_tether"
+  },
+  "Necro": {
+    "1": "ability_necro_hauntingskull",
+    "2": "ability_necro_zombiewall",
+    "3": "ability_necro_fear",
+    "4": "citadel_ability_necro_gravestone"
+  },
+  "Fencer": {
+    "1": "ability_fencer_throwblade",
+    "2": "ability_fencer_riposte",
+    "3": "ability_fencer_lunge",
+    "4": "ability_fencer_ultimate"
+  },
+  "Familiar": {
+    "1": "ability_familiar_ability02",
+    "2": "ability_familiar_attach",
+    "3": "ability_familiar_helpinghands",
+    "4": "ability_familiar_ability01"
+  },
+  "Werewolf": {
+    "1": "ability_werewolf_unload_gun2",
+    "2": "ability_werewolf_kickflip",
+    "3": "ability_werewolf_netshot",
+    "4": "ability_werewolf_transformation"
+  },
+  "Unicorn": {
+    "1": "ability_unicorn_radiantblast",
+    "2": "ability_unicorn_prismaticguard",
+    "3": "ability_unicorn_luminousstrike",
+    "4": "ability_unicorn_dazzlingorb"
+  }
+}
