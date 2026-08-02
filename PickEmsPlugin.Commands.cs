@@ -91,6 +91,51 @@ public partial class PickEmsPlugin
         }
     }
 
+
+    [Command("draft_random")]
+    public void CmdDraftRandom(CCitadelPlayerController caller)
+    {
+        // this that could be added: 
+        //     1. random hero selection 
+        //     2. the same ability for all slots
+
+        var pawn = caller?.GetHeroPawn();
+        if (pawn == null)
+        {
+            WriteConsole(caller, "Player does not have a hero pawn.");
+            return;
+        }
+
+        for (int slot = 1; slot <= 4; slot++)
+        {
+            var heroes = Enum.GetValues<Heroes>()
+                 .Where(h => h.GetHeroData()?.AvailableInGame == true)
+                 .ToArray();
+            var randomHero = heroes[Random.Shared.Next(heroes.Length)];
+
+            if (!_heroLookup.TryGetValue(randomHero.ToString(), out var hero))
+            {
+                WriteConsole(caller, $"Invalid hero name {randomHero}. Must be a valid hero name.");
+                return;
+            }
+
+            if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
+            {
+                WriteConsole(caller, $"No ability mapping found for hero {randomHero}.");
+                return;
+            }
+
+            AddDraftAbility(
+                pawn,
+                slot - 1, // Convert to 0-based index
+                abilities[slot]
+            );
+
+            WriteConsole(caller, $"Drafting {randomHero}'s ability {abilities[slot]} to slot {slot} for player {caller?.PlayerSteamId}.");
+        }
+    }
+
+
     [Command("draft_all_from_hero")]
     public void CmdDraftAllFromHero(CCitadelPlayerController caller, string heroName)
     {
