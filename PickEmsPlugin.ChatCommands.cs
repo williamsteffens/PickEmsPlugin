@@ -57,6 +57,28 @@ public partial class PickEmsPlugin
         Console.WriteLine($"Drafting {heroName}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
     }
 
+    [Command("draft_list")]
+    public void CmdDraftList(CCitadelPlayerController caller)
+    {
+        var pawn = caller?.GetHeroPawn();
+        if (pawn == null)
+        {
+            Console.WriteLine("Player does not have a hero pawn.");
+            return;
+        }
+
+        foreach (var hero in heroAbilityMapping)
+        {
+            Console.WriteLine($"{hero.Key}:");
+
+            foreach (var ability in hero.Value.OrderBy(x => x.Key))
+            {
+                Console.WriteLine(
+                    $"  {ability.Key}: {ability.Value}");
+            }
+        }
+    }
+
     [Command("progress")]
     public void CmdProgress(
         CCitadelPlayerController caller,
