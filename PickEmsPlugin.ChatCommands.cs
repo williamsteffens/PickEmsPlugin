@@ -30,6 +30,12 @@ public partial class PickEmsPlugin
             return;
         }
 
+        if (slot == 4 && abilitySlot != 4 || slot != 4 && abilitySlot == 4)
+        {
+            Console.WriteLine($"Invalid ability slot {abilitySlot} for ultimate ability. Ultimate ability can only be selected for slot 4.");
+            return;
+        }
+
         if (!heroAbilityMapping.TryGetValue(hero, out var abilities))
         {
             Console.WriteLine($"No ability mapping found for hero {hero}.");
