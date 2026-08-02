@@ -35,11 +35,22 @@ public partial class PickEmsPlugin
         {
             var json = File.ReadAllText(path);
 
-            return JsonSerializer.Deserialize<
-                Dictionary<string, Dictionary<int, string>>
-            >(json) ?? new Dictionary<string, Dictionary<int, string>>(
+            var raw = JsonSerializer.Deserialize<Dictionary<string, Dictionary<int, string>>>(json);
+
+            var result = new Dictionary<string, Dictionary<int, string>>(
                 StringComparer.OrdinalIgnoreCase
             );
+
+            if (raw == null)
+            {
+                Console.WriteLine($"Hero ability mapping is empty: {path}");
+                return result;
+            }
+
+            foreach (var (hero, abilities) in raw)
+                result[hero] = new Dictionary<int, string>(abilities);
+
+            return result;
         }
         catch (Exception ex)
         {

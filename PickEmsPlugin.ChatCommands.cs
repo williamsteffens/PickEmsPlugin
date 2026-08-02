@@ -50,7 +50,7 @@ public partial class PickEmsPlugin
 
         AddDraftAbility(
             pawn,
-            slot,
+            slot - 1, // Convert to 0-based index
             ability
         );
 
