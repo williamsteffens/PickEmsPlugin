@@ -36,12 +36,35 @@ public partial class PickEmsPlugin
             return;
         }
 
-        if (!heroAbilityMapping.TryGetValue(heroName, out var abilities))
+        var hero = Enum.GetValues<Heroes>()
+            .FirstOrDefault(h =>
+                string.Equals(
+                    h.ToDisplayName(),
+                    heroName,
+                    StringComparison.OrdinalIgnoreCase
+                )
+                ||
+                string.Equals(
+                    h.ToString(),
+                    heroName,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            );
+            
+        if (hero == default)
+        {
+            Console.WriteLine($"Invalid hero name {heroName}. Must be a valid hero name.");
+            return;
+        }
+
+        var key = hero.ToString();
+
+        if (!heroAbilityMapping.TryGetValue(key, out var abilities))
         {
             Console.WriteLine($"No ability mapping found for hero {heroName}.");
             return;
         }
-
+    
         if (!abilities.TryGetValue(abilitySlot, out var ability))
         {
             Console.WriteLine($"No ability mapping found for slot {abilitySlot} for hero {heroName}.");
@@ -69,7 +92,14 @@ public partial class PickEmsPlugin
 
         foreach (var hero in heroAbilityMapping)
         {
-            Console.WriteLine($"{hero.Key}:");
+            if (Enum.TryParse<Heroes>(hero.Key, true, out var heroEnum))
+            {
+                Console.WriteLine($"{heroEnum.ToDisplayName()} / \"{hero.Key}\":");
+            }
+            else
+            {
+                Console.WriteLine($"{hero.Key}:");
+            }
 
             foreach (var ability in hero.Value.OrderBy(x => x.Key))
             {
