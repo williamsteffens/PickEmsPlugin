@@ -64,12 +64,37 @@ public partial class PickEmsPlugin
     }
 
     [Command("draft_list")]
-    public void CmdDraftList(CCitadelPlayerController caller)
+    public void CmdDraftList(CCitadelPlayerController caller, params string[] args)
     {
         var pawn = caller?.GetHeroPawn();
         if (pawn == null)
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
+            return;
+        }
+
+        string heroName = args.Length > 0 ? args[0] : string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(heroName))
+        {
+            if (!_heroLookup.TryGetValue(heroName, out var hero))
+            {
+                WriteConsole(caller, $"Invalid hero name {heroName}. Must be a valid hero name.");
+                return;
+            }
+
+            if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
+            {
+                WriteConsole(caller, $"No ability mapping found for hero {heroName}.");
+                return;
+            }
+
+            WriteConsole(caller, $"{hero.ToDisplayName()} / \"{hero}\":");
+            foreach (var ability in abilities)
+            {
+                WriteConsole(caller, $"  {ability.Key}: {ability.Value}");
+            }
+
             return;
         }
 
@@ -90,7 +115,6 @@ public partial class PickEmsPlugin
             }
         }
     }
-
 
     [Command("draft_random")]
     public void CmdDraftRandom(CCitadelPlayerController caller)
