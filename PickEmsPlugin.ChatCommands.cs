@@ -102,7 +102,13 @@ public partial class PickEmsPlugin
             return;
         }
 
-        if (!_heroAbilityMapping.TryGetValue(heroName, out var abilities))
+        if (!_heroLookup.TryGetValue(heroName, out var hero))
+        {
+            Console.WriteLine($"Invalid hero name {heroName}. Must be a valid hero name.");
+            return;
+        }
+
+        if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
         {
             Console.WriteLine($"No ability mapping found for hero {heroName}.");
             return;
