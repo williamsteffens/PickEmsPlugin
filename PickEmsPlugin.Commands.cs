@@ -4,6 +4,10 @@ namespace PickEmsPlugin;
 
 public partial class PickEmsPlugin
 {
+    // ------------------------------------------------------------------------ 
+    // draft <slot> <hero> <abilitySlot> 
+    // ------------------------------------------------------------------------
+
     [Command("draft")]
     public void CmdDraft(
         CCitadelPlayerController caller,
@@ -18,35 +22,16 @@ public partial class PickEmsPlugin
             return;
         }
 
-        if (slot < 1 || slot > 4) // (ushort)EAbilitySlot.Signature4 used this before, but it was changed to 4 to match the abilitySlot check below
-        {
-            WriteConsole(caller, $"Invalid ability slot {slot}. Must be between 1 and 4.");
+        if (
+            !IsValidAbilitySlot(caller, slot, "draft") ||
+            !IsValidAbilitySlot(caller, abilitySlot, "ability") ||
+            !IsValidAbilitySlotCombination(caller, slot, abilitySlot)
+        )
             return;
-        }
 
-        if (abilitySlot < 1 || abilitySlot > 4)
-        {
-            WriteConsole(caller, $"Invalid ability slot {abilitySlot}. Must be between 1 and 4.");
-            return;
-        }
 
-        if (slot == 4 && abilitySlot != 4 || slot != 4 && abilitySlot == 4)
-        {
-            WriteConsole(caller, $"Invalid ability slot {abilitySlot} for ultimate ability. Ultimate ability can only be selected for slot 4.");
+        if (!TryGetHeroAbilities(caller, heroName, out var hero, out var abilities))
             return;
-        }
-
-        if (!_heroLookup.TryGetValue(heroName, out var hero))
-        {
-            WriteConsole(caller, $"Invalid hero name {heroName}. Must be a valid hero name.");
-            return;
-        }
-
-        if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
-        {
-            WriteConsole(caller, $"No ability mapping found for hero {heroName}.");
-            return;
-        }
 
         if (!abilities.TryGetValue(abilitySlot, out var ability))
         {
@@ -63,6 +48,10 @@ public partial class PickEmsPlugin
         WriteConsole(caller, $"Drafting {heroName}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
     }
 
+    // ------------------------------------------------------------------------
+    // draft_list [hero]
+    // ------------------------------------------------------------------------
+
     [Command("draft_list")]
     public void CmdDraftList(CCitadelPlayerController caller, params string[] args)
     {
@@ -73,48 +62,38 @@ public partial class PickEmsPlugin
             return;
         }
 
-        string heroName = args.Length > 0 ? args[0] : string.Empty;
+        var heroName = args.FirstOrDefault();
 
         if (!string.IsNullOrWhiteSpace(heroName))
         {
-            if (!_heroLookup.TryGetValue(heroName, out var hero))
-            {
-                WriteConsole(caller, $"Invalid hero name {heroName}. Must be a valid hero name.");
+            if (!TryGetHeroAbilities(caller, heroName, out var hero, out var abilities))
                 return;
-            }
-
-            if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
-            {
-                WriteConsole(caller, $"No ability mapping found for hero {heroName}.");
-                return;
-            }
 
             WriteConsole(caller, $"{hero.ToDisplayName()} / \"{hero}\":");
-            foreach (var ability in abilities)
-            {
-                WriteConsole(caller, $"  {ability.Key}: {ability.Value}");
-            }
+
+            PrintAbilities(caller, abilities);
 
             return;
         }
 
-        foreach (var hero in _heroAbilityMapping)
+        foreach (var entry in _heroAbilityMapping)
         {
-            if (Enum.TryParse<Heroes>(hero.Key, true, out var heroEnum))
+            if (_heroLookup.TryGetValue(entry.Key, out var hero))
             {
-                WriteConsole(caller, $"{heroEnum.ToDisplayName()} / \"{hero.Key}\":");
+                WriteConsole(caller, $"{hero.ToDisplayName()} / \"{entry.Key}\":");
             }
             else
             {
-                WriteConsole(caller, $"{hero.Key}:");
+                WriteConsole(caller, $"{entry.Key}:");
             }
 
-            foreach (var ability in hero.Value.OrderBy(x => x.Key))
-            {
-                WriteConsole(caller, $"  {ability.Key}: {ability.Value}");
-            }
+            PrintAbilities(caller, entry.Value);
         }
     }
+
+    // ------------------------------------------------------------------------ 
+    // draft_random 
+    // ------------------------------------------------------------------------
 
     [Command("draft_random")]
     public void CmdDraftRandom(CCitadelPlayerController caller)
@@ -122,6 +101,7 @@ public partial class PickEmsPlugin
         // this that could be added: 
         //     1. random hero selection 
         //     2. the same ability for all slots
+        //     3. different abilities not corresponding to the same slot of the random hero
 
         var pawn = caller?.GetHeroPawn();
         if (pawn == null)
@@ -130,20 +110,15 @@ public partial class PickEmsPlugin
             return;
         }
 
-        for (int slot = 1; slot <= 4; slot++)
-        {
-            var heroes = Enum.GetValues<Heroes>()
+        var heroes = Enum.GetValues<Heroes>()
                  .Where(h => h.GetHeroData()?.AvailableInGame == true)
                  .ToArray();
+
+        for (int slot = MinAbilitySlot; slot <= MaxAbilitySlot; slot++)
+        {
             var randomHero = heroes[Random.Shared.Next(heroes.Length)];
 
-            if (!_heroLookup.TryGetValue(randomHero.ToString(), out var hero))
-            {
-                WriteConsole(caller, $"Invalid hero name {randomHero}. Must be a valid hero name.");
-                return;
-            }
-
-            if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
+            if (!_heroAbilityMapping.TryGetValue(randomHero.ToString(), out var abilities))
             {
                 WriteConsole(caller, $"No ability mapping found for hero {randomHero}.");
                 return;
@@ -159,6 +134,9 @@ public partial class PickEmsPlugin
         }
     }
 
+    // ------------------------------------------------------------------------
+    // draft_all_from_hero <hero> 
+    // ------------------------------------------------------------------------
 
     [Command("draft_all_from_hero")]
     public void CmdDraftAllFromHero(CCitadelPlayerController caller, string heroName)
@@ -170,17 +148,8 @@ public partial class PickEmsPlugin
             return;
         }
 
-        if (!_heroLookup.TryGetValue(heroName, out var hero))
-        {
-            WriteConsole(caller, $"Invalid hero name {heroName}. Must be a valid hero name.");
+        if (!TryGetHeroAbilities(caller, heroName, out var hero, out var abilities))
             return;
-        }
-
-        if (!_heroAbilityMapping.TryGetValue(hero.ToString(), out var abilities))
-        {
-            WriteConsole(caller, $"No ability mapping found for hero {heroName}.");
-            return;
-        }
 
         foreach (var ability in abilities)
         {
@@ -194,6 +163,10 @@ public partial class PickEmsPlugin
         }
     }
 
+    // ------------------------------------------------------------------------
+    // progress <slot> <upgrades> 
+    // ------------------------------------------------------------------------
+
     [Command("progress")]
     public void CmdProgress(
         CCitadelPlayerController caller,
@@ -204,6 +177,15 @@ public partial class PickEmsPlugin
         if (pawn == null)
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
+            return;
+        }
+
+        if (!IsValidAbilitySlot(caller, slot, "ability"))
+            return;
+
+        if (upgrades < 0)
+        {
+            WriteConsole(caller, $"Invalid upgrades {upgrades}. Must be a non-negative integer.");
             return;
         }
 
