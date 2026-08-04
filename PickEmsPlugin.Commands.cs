@@ -48,6 +48,36 @@ public partial class PickEmsPlugin
         WriteConsole(caller, $"Drafting {heroName}'s ability {ability} to slot {slot} for player {caller?.PlayerSteamId}.");
     }
 
+    // ------------------------------------------------------------------------ 
+    // draft_by_name <slot> <abilityName> 
+    // ------------------------------------------------------------------------
+
+    [Command("draft_by_name")]
+    public void CmdDraftByName(
+        CCitadelPlayerController caller,
+        int slot,
+        string abilityName)
+    {
+        var pawn = caller?.GetHeroPawn();
+        if (pawn == null)
+        {
+            WriteConsole(caller, "Player does not have a hero pawn.");
+            return;
+        }
+
+        if (!IsValidAbilitySlot(caller, slot, "draft"))
+            return;
+
+
+        AddDraftAbility(
+            pawn,
+            slot - 1, // Convert to 0-based index
+            abilityName
+        );
+
+        WriteConsole(caller, $"Drafting ability {abilityName} to slot {slot} for player {caller?.PlayerSteamId}.");
+    }
+
     // ------------------------------------------------------------------------
     // draft_list [hero]
     // ------------------------------------------------------------------------
