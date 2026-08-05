@@ -4,6 +4,12 @@ namespace PickEmsPlugin;
 
 public partial class PickEmsPlugin
 {
+    // TODO:
+    // I want a short hand version of this that just takes 
+    // slot and hero name 
+    // makes it cleaner for ult as well and will still allow for 
+    // ult and signature 0-2 swap later if i figure that out
+
     // ------------------------------------------------------------------------ 
     // draft <slot> <hero> <abilitySlot> 
     // ------------------------------------------------------------------------
@@ -67,7 +73,6 @@ public partial class PickEmsPlugin
 
         if (!IsValidAbilitySlot(caller, slot, "draft"))
             return;
-
 
         AddDraftAbility(
             pawn,
