@@ -94,39 +94,6 @@ public partial class PickEmsPlugin
         return lookup;
     }
 
-    public static IReadOnlyList<string> ResolveAbilityFamilyNames(string abilityName)
-    {
-        var ordered = new List<string>();
-        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        void AddIfMissing(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return;
-
-            if (seen.Add(name))
-                ordered.Add(name);
-        }
-
-        AddIfMissing(abilityName);
-
-        if (_abilityDependencyMap.TryGetValue(abilityName, out var dependencies))
-        {
-            foreach (var dependency in dependencies)
-                AddIfMissing(dependency);
-        }
-
-        return ordered;
-    }
-
-    public static int ApplyUpgradeProgress(int currentBits, int upgrades)
-    {
-        if (upgrades <= 0)
-            return currentBits | 0b00001;
-
-        return (currentBits << upgrades) | ((1 << upgrades) - 1);
-    }
-
     private void AddDraftAbility(CCitadelPlayerPawn pawn, int slot, string newAbility)
     {
         CCitadelBaseAbility? oldAbility = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
@@ -136,15 +103,8 @@ public partial class PickEmsPlugin
         {
             oldAbilityName = oldAbility.AbilityName;
             oldUpgradeLevel = oldAbility.UpgradeBits;
+            pawn.RemoveAbility(oldAbilityName);
         }
-
-        var familyToRemove = ResolveAbilityFamilyNames(oldAbilityName)
-            .Concat(ResolveAbilityFamilyNames(newAbility))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-
-        foreach (var abilityName in familyToRemove)
-            pawn.RemoveAbility(abilityName);
 
         try
         {
@@ -154,9 +114,6 @@ public partial class PickEmsPlugin
         }
         catch
         {
-            foreach (var abilityName in ResolveAbilityFamilyNames(oldAbilityName))
-                pawn.RemoveAbility(abilityName);
-
             pawn.AddAbility(oldAbilityName, (ushort)slot);
             pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot)!.UpgradeBits |= oldUpgradeLevel;
             throw;
@@ -173,5 +130,13 @@ public partial class PickEmsPlugin
         }
 
         ability.UpgradeBits = ApplyUpgradeProgress(ability.UpgradeBits, upgrades);
+    }
+
+    public static int ApplyUpgradeProgress(int currentBits, int upgrades)
+    {
+        if (upgrades <= 0)
+            return currentBits | 0b00001;
+
+        return (currentBits << upgrades) | ((1 << upgrades) - 1);
     }
 }
