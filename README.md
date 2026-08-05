@@ -1,13 +1,13 @@
 # Deadlock Pick'ems/Drafting 
 
-A **Deadlock** server plugin for creating custom ability kits for  drafting/pick'em gamemodes.
+A **Deadlock** server plugin for creating custom ability kits for drafting/pick'em gamemodes.
 
 Built using the **Deadworks modding tool**.
 
 ## Configuration
 
 > [!NOTE]
-> Hero names are based on in-game naming. Refer to the `heroAbilityMapping.json` file, or use the in-game `/draft --list_heroes` command.
+> Hero names are based on internal naming and "displayNames". Refer to the `heroAbilityMapping.json` file, and/or use the `dw_draft_list [hero]` (the hero option is optional and will only list name and abilities of the given hero) command.
 
 Abilities are defined in `heroAbilityMapping.json`:
 
@@ -25,8 +25,9 @@ Abilities are defined in `heroAbilityMapping.json`:
 The first number represents the **hero's ability slot**, while the value is the ability's internal name.
 
 ## Main Usage
+
 > [!NOTE]
-> Hero names are based on in-game naming. Refer to the `heroAbilityMapping.json` file, or use the in-game `/draft --list_heroes` command.
+> Hero names are based on internal naming and "displayNames". Refer to the `heroAbilityMapping.json` file, and/or use the `dw_draft_list [hero]` (the hero option is optional and will only list name and abilities of the given hero) command.
 
 Draft an ability using:
 
@@ -58,7 +59,16 @@ For the `/draft` command the hero names are case-insensitive, so the following a
 /draft 1 INFERNO 1
 ```
 
-See `/draft_help` in-game for more commands and usage.
+Use `dw_help` in the in-game console for more commands.
+
+## Known Bugs
+
+- Imbued items are not working: Trying to purchase a imbued item will fail without any loss of currency. 
+- Some abilities depend on additional abilities (such as Viper's slide or Sinclair's Assistant) and are currently not able to be drafted.
+- Some bugs are isolated to duplicated abilities:
+    - Upgrading duplicated abilities result in only one ability getting upgraded, with a visual bug causing none of the tiers to be marked as upgraded. Currently, `dw_progress <slot> <tier>` can be used to upgrade the ability as a workaround.
+    - Some abilities have one or more trigger/cancel abilities coupled to them (like Pocket's Flying Cloack or McGinnis' Spectral Wall) and upon adding abilities, the coupled abilities are only added on the first instance of the ability. This causes the coupled abilities to not function for later instances of the ability drafted and in some cases crashing may occur.
+
 
 ## Contributing
 
