@@ -8,6 +8,18 @@ public partial class PickEmsPlugin
     private static readonly Dictionary<string, Dictionary<int, string>> _heroAbilityMapping =
         LoadHeroAbilityMapping();
 
+    private static readonly Dictionary<string, string[]> _abilityDependencyMap =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["citadel_ability_fissure_wall"] =
+            [
+                "citadel_ability_fissure_wall_cancel",
+                "citadel_ability_fissure_wall_trigger"
+            ],
+            ["ability_viper_venom"] = ["ability_viper_slide"],
+            ["ability_viper_debuffdagger"] = ["ability_viper_slide"]
+        };
+
     // TODO: all of this should probably be moved to a config class https://docs.deadworks.net/api-reference/configuration
     private static Dictionary<string, Dictionary<int, string>> LoadHeroAbilityMapping()
     {
@@ -20,11 +32,11 @@ public partial class PickEmsPlugin
             SearchOption.AllDirectories)
         .FirstOrDefault();
 
-        WriteConsole(null, $"Loading hero ability mapping from: {path}");
+        Console.WriteLine($"Loading hero ability mapping from: {path}");
 
         if (!File.Exists(path))
         {
-            WriteConsole(null, $"Hero ability mapping not found: {path}");
+            Console.WriteLine($"Hero ability mapping not found: {path}");
             return new Dictionary<string, Dictionary<int, string>>(
                 // Use case-insensitive comparison for hero names
                 StringComparer.OrdinalIgnoreCase
@@ -43,7 +55,7 @@ public partial class PickEmsPlugin
 
             if (raw == null)
             {
-                WriteConsole(null, $"Hero ability mapping is empty: {path}");
+                Console.WriteLine($"Hero ability mapping is empty: {path}");
                 return result;
             }
 
@@ -54,7 +66,7 @@ public partial class PickEmsPlugin
         }
         catch (Exception ex)
         {
-            WriteConsole(null, $"Failed to load heroAbilityMapping.json: {ex}");
+            Console.WriteLine($"Failed to load heroAbilityMapping.json: {ex}");
             return new Dictionary<string, Dictionary<int, string>>(
                 StringComparer.OrdinalIgnoreCase
             );
@@ -82,7 +94,40 @@ public partial class PickEmsPlugin
         return lookup;
     }
 
-    private static void AddDraftAbility(CCitadelPlayerPawn pawn, int slot, string newAbility)
+    public static IReadOnlyList<string> ResolveAbilityFamilyNames(string abilityName)
+    {
+        var ordered = new List<string>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void AddIfMissing(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+
+            if (seen.Add(name))
+                ordered.Add(name);
+        }
+
+        AddIfMissing(abilityName);
+
+        if (_abilityDependencyMap.TryGetValue(abilityName, out var dependencies))
+        {
+            foreach (var dependency in dependencies)
+                AddIfMissing(dependency);
+        }
+
+        return ordered;
+    }
+
+    public static int ApplyUpgradeProgress(int currentBits, int upgrades)
+    {
+        if (upgrades <= 0)
+            return currentBits | 0b00001;
+
+        return (currentBits << upgrades) | ((1 << upgrades) - 1);
+    }
+
+    private void AddDraftAbility(CCitadelPlayerPawn pawn, int slot, string newAbility)
     {
         CCitadelBaseAbility? oldAbility = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
         string oldAbilityName = "citadel_ability_void_sphere";
@@ -91,8 +136,15 @@ public partial class PickEmsPlugin
         {
             oldAbilityName = oldAbility.AbilityName;
             oldUpgradeLevel = oldAbility.UpgradeBits;
-            pawn.RemoveAbility(oldAbilityName);
         }
+
+        var familyToRemove = ResolveAbilityFamilyNames(oldAbilityName)
+            .Concat(ResolveAbilityFamilyNames(newAbility))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        foreach (var abilityName in familyToRemove)
+            pawn.RemoveAbility(abilityName);
 
         try
         {
@@ -102,13 +154,16 @@ public partial class PickEmsPlugin
         }
         catch
         {
+            foreach (var abilityName in ResolveAbilityFamilyNames(oldAbilityName))
+                pawn.RemoveAbility(abilityName);
+
             pawn.AddAbility(oldAbilityName, (ushort)slot);
             pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot)!.UpgradeBits |= oldUpgradeLevel;
             throw;
         }
     }
 
-    private static void ProgressAbility(CCitadelPlayerPawn pawn, int slot, int upgrades)
+    private void ProgressAbility(CCitadelPlayerPawn pawn, int slot, int upgrades)
     {
         CCitadelBaseAbility? ability = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
         if (ability == null)
@@ -117,6 +172,6 @@ public partial class PickEmsPlugin
             return;
         }
 
-        ability.UpgradeBits = (ability.UpgradeBits << upgrades) | ((1 << upgrades) - 1);
+        ability.UpgradeBits = ApplyUpgradeProgress(ability.UpgradeBits, upgrades);
     }
 }

@@ -36,4 +36,10 @@ public partial class PickEmsPlugin : DeadworksPluginBase
 
         Precache.AddHero(Heroes.Skyrunner);
     }
+
+    public override HookResult OnClientConCommand(ClientConCommandEvent ev)
+    {
+        WriteConsole(null, $"client ran {string.Join(' ', ev.Args)}");
+        return HookResult.Continue;
+    }    
 }
