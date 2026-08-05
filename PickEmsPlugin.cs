@@ -33,5 +33,7 @@ public partial class PickEmsPlugin : DeadworksPluginBase
 
         foreach (var hero in heroes)
             Precache.AddHero(hero);
+
+        Precache.AddHero(Heroes.Skyrunner);
     }
 }
