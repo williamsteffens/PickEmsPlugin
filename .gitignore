@@ -10,3 +10,6 @@ obj/
 # NuGet
 *.nupkg
 *.snupkg
+
+# markdowns for me
+md/
