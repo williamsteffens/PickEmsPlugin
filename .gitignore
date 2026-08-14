@@ -10,3 +10,5 @@ obj/
 # NuGet
 *.nupkg
 *.snupkg
+
+md/

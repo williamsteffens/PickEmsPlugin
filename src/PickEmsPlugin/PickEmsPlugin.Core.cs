@@ -24,7 +24,7 @@ public partial class PickEmsPlugin
     private static Dictionary<string, Dictionary<int, string>> LoadHeroAbilityMapping()
     {
         var currentDirectory = Directory.GetCurrentDirectory();
-        
+
         var path = Directory
         .EnumerateFiles(
             currentDirectory,
@@ -94,6 +94,12 @@ public partial class PickEmsPlugin
         return lookup;
     }
 
+    private static readonly SchemaAccessor<bool> _abilityCanBeImbued =
+        new("CCitadelBaseAbility"u8, "m_bCanBeImbued"u8);
+
+    private static readonly SchemaAccessor<int> _abilityRemainingCharges =
+        new("CCitadelBaseAbility"u8, "m_iRemainingCharges"u8);
+
     private void AddDraftAbility(CCitadelPlayerPawn pawn, int slot, string newAbility)
     {
         CCitadelBaseAbility? oldAbility = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
@@ -103,6 +109,11 @@ public partial class PickEmsPlugin
         {
             oldAbilityName = oldAbility.AbilityName;
             oldUpgradeLevel = oldAbility.UpgradeBits;
+
+            bool oldCanBeImbued = _abilityCanBeImbued.Get(oldAbility.Handle);
+            WriteConsole(pawn.Controller, $"old ability: {oldAbility.Classname}");
+            WriteConsole(pawn.Controller, $"can be imbued: {oldCanBeImbued}");
+
             pawn.RemoveAbility(oldAbilityName);
         }
 
@@ -110,10 +121,20 @@ public partial class PickEmsPlugin
         {
             var check = pawn.AddAbility(newAbility, (ushort)slot)
                 ?? throw new InvalidOperationException($"Failed to add ability '{newAbility}' to slot {slot}.");
-            pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot)!.UpgradeBits |= oldUpgradeLevel;
+            CCitadelBaseAbility? newAbilityInstance = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
+            if (newAbilityInstance != null)
+            {
+                newAbilityInstance.UpgradeBits |= oldUpgradeLevel;
+                _abilityCanBeImbued.Set(newAbilityInstance.Handle, false);
+                WriteConsole(pawn.Controller, $"new ability: {newAbilityInstance.Classname}");
+                WriteConsole(pawn.Controller, $"new ability can be imbued: {_abilityCanBeImbued.Get(newAbilityInstance.Handle)}");
+                WriteConsole(pawn.Controller, $"new ability remaining charges: {_abilityRemainingCharges.Get(newAbilityInstance.Handle)}");
+                _abilityRemainingCharges.Set(newAbilityInstance.Handle, 1);
+            }
         }
         catch
         {
+            // If adding the new ability fails, restore the old ability and its upgrade level
             pawn.AddAbility(oldAbilityName, (ushort)slot);
             pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot)!.UpgradeBits |= oldUpgradeLevel;
             throw;
