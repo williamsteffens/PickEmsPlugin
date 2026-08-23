@@ -124,7 +124,7 @@ public partial class PickEmsPlugin
             CCitadelBaseAbility? newAbilityInstance = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
             if (newAbilityInstance != null)
             {
-                newAbilityInstance.UpgradeBits |= oldUpgradeLevel;
+                newAbilityInstance.UpgradeBits = oldUpgradeLevel;
                 _abilityCanBeImbued.Set(newAbilityInstance.Handle, false);
                 WriteConsole(pawn.Controller, $"new ability: {newAbilityInstance.Classname}");
                 WriteConsole(pawn.Controller, $"new ability can be imbued: {_abilityCanBeImbued.Get(newAbilityInstance.Handle)}");
@@ -136,7 +136,7 @@ public partial class PickEmsPlugin
         {
             // If adding the new ability fails, restore the old ability and its upgrade level
             pawn.AddAbility(oldAbilityName, (ushort)slot);
-            pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot)!.UpgradeBits |= oldUpgradeLevel;
+            pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot)!.UpgradeBits = oldUpgradeLevel;
             throw;
         }
     }
