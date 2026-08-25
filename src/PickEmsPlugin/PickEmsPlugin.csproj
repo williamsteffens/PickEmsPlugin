@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <AssemblyName>PickEmsPlugin</AssemblyName>
         <RootNamespace>PickEmsPlugin</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
