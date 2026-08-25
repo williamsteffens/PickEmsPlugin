@@ -141,6 +141,14 @@ public partial class PickEmsPlugin
         }
     }
 
+    public static int ApplyUpgradeProgress(int currentBits, int upgrades)
+    {
+        if (upgrades <= 0)
+            return currentBits | 0b00001;
+
+        return (currentBits << upgrades) | ((1 << upgrades) - 1);
+    }
+
     private void ProgressAbility(CCitadelPlayerPawn pawn, int slot, int upgrades)
     {
         CCitadelBaseAbility? ability = pawn.AbilityComponent.GetAbilityBySlot((EAbilitySlot)slot);
@@ -151,13 +159,5 @@ public partial class PickEmsPlugin
         }
 
         ability.UpgradeBits = ApplyUpgradeProgress(ability.UpgradeBits, upgrades);
-    }
-
-    public static int ApplyUpgradeProgress(int currentBits, int upgrades)
-    {
-        if (upgrades <= 0)
-            return currentBits | 0b00001;
-
-        return (currentBits << upgrades) | ((1 << upgrades) - 1);
     }
 }
