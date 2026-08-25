@@ -21,8 +21,7 @@ public partial class PickEmsPlugin
         string heroName,
         int abilitySlot)
     {
-        var pawn = caller?.GetHeroPawn();
-        if (pawn == null)
+        if (caller?.GetHeroPawn() is not { } pawn)
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
             return;
@@ -64,8 +63,7 @@ public partial class PickEmsPlugin
         int slot,
         string abilityName)
     {
-        var pawn = caller?.GetHeroPawn();
-        if (pawn == null)
+        if (caller?.GetHeroPawn() is not { } pawn)
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
             return;
@@ -90,8 +88,7 @@ public partial class PickEmsPlugin
     [Command("draft_list")]
     public void CmdDraftList(CCitadelPlayerController caller, params string[] args)
     {
-        var pawn = caller?.GetHeroPawn();
-        if (pawn == null)
+        if (caller?.GetHeroPawn() is not { })
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
             return;
@@ -138,8 +135,7 @@ public partial class PickEmsPlugin
         //     2. the same ability for all slots
         //     3. different abilities not corresponding to the same slot of the random hero
 
-        var pawn = caller?.GetHeroPawn();
-        if (pawn == null)
+        if (caller?.GetHeroPawn() is not { } pawn)
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
             return;
@@ -176,8 +172,7 @@ public partial class PickEmsPlugin
     [Command("draft_all_from_hero")]
     public void CmdDraftAllFromHero(CCitadelPlayerController caller, string heroName)
     {
-        var pawn = caller?.GetHeroPawn();
-        if (pawn == null)
+        if (caller?.GetHeroPawn() is not { } pawn)
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
             return;
@@ -208,8 +203,7 @@ public partial class PickEmsPlugin
         int slot,
         int upgrades)
     {
-        var pawn = caller?.GetHeroPawn();
-        if (pawn == null)
+        if (caller?.GetHeroPawn() is not { } pawn)
         {
             WriteConsole(caller, "Player does not have a hero pawn.");
             return;

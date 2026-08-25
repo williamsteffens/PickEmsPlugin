@@ -40,6 +40,42 @@ public partial class PickEmsPlugin : DeadworksPluginBase
     public override HookResult OnClientConCommand(ClientConCommandEvent ev)
     {
         WriteConsole(null, $"client ran {string.Join(' ', ev.Args)}");
+
+        var pawn = ev.Controller?.GetHeroPawn();
+        if (pawn == null) return HookResult.Continue;
+
+        WriteConsole(null, $"client hero pawn: {pawn.Name} ({pawn.Handle})");
+        
+        // pawn.AddItem("upgrade_mystic_reverb", true);
+        // ev.Caller.GetHeroPawn()?.AddDependentItemUnchecked("upgrade_mystic_reverb", 1);
         return HookResult.Continue;
-    }    
+    }
+
+    [GameEventHandler("ability_added")]
+    public HookResult OnAbilityAdded(GameEvent ev)
+    {
+        WriteConsole(null, "GameEvent: ability_added");
+        return HookResult.Continue;
+    }
+
+    [GameEventHandler("player_ability_upgraded")]
+    public HookResult OnPlayerAbilityUpgraded(GameEvent ev)
+    {
+        WriteConsole(null, "GameEvent: player_ability_upgraded");
+        return HookResult.Continue;
+    }
+
+    private static readonly SchemaAccessor<int> _stackCount = new("CBaseModifier"u8, "m_iStackCount"u8);
+
+    static int GetStacks(CBaseEntity ent, string modifierName) {
+        var prop = ent.ModifierProp;
+        if (prop is null) 
+            return 0;
+
+        foreach (var m in prop.Modifiers)
+            if (m.SubclassVData?.Name == modifierName)
+                return _stackCount.Get(m.Handle);
+        
+        return 0;
+    }
 }
